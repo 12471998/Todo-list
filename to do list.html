@@ -1,0 +1,81 @@
+<html>
+<head>
+  <title>To-Do List App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #container {
+      text-align: center;
+    }
+    #taskInput {
+      width: 200px;
+      margin-right: 10px;
+    }
+    #addTaskBtn {
+      cursor: pointer;
+    }
+    .task {
+      margin-bottom: 5px;
+    }
+    .deleteBtn {
+      margin-left: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>To-Do List App</h1>
+    <input type="text" id="taskInput" placeholder="Enter task">
+    <button id="addTaskBtn">Add Task</button>
+    <div id="taskList"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const taskInput = document.getElementById("taskInput");
+      const addTaskBtn = document.getElementById("addTaskBtn");
+      const taskList = document.getElementById("taskList");
+
+      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+      function renderTasks() {
+        taskList.innerHTML = "";
+        tasks.forEach((task, index) => {
+          const taskDiv = document.createElement("div");
+          taskDiv.classList.add("task");
+          taskDiv.textContent = task;
+          const deleteBtn = document.createElement("span");
+          deleteBtn.classList.add("deleteBtn");
+          deleteBtn.textContent = "❌";
+          deleteBtn.addEventListener("click", () => {
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            renderTasks();
+          });
+          taskDiv.appendChild(deleteBtn);
+          taskList.appendChild(taskDiv);
+        });
+      }
+
+      renderTasks();
+
+      addTaskBtn.addEventListener("click", () => {
+        const newTask = taskInput.value.trim();
+        if (newTask !== "") {
+          tasks.push(newTask);
+          localStorage.setItem("tasks", JSON.stringify(tasks));
+          renderTasks();
+          taskInput.value = "";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
